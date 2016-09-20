@@ -4,9 +4,14 @@
 Usage:
 FLASK_APP=./wsgi.py flask run"""
 
-import sys, os
+import sys
+import os
+import unittest
+import tests
+import coverage
 
-project = "fbone"
+
+project = "fbone"  #pylint: disable=invalid-name
 
 # Use instance folder, instead of env variables.
 # specify dev/production config
@@ -26,6 +31,52 @@ if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
 # give wsgi the "application"
-from fbone import create_app
+from fbone import create_app #pylint: disable=wrong-import-position
 virtualenv()
-application = create_app()
+application = create_app()   #pylint: disable=invalid-name
+#application = flask.Flask(__name__)
+
+@application.cli.command()
+def setdir():
+    """Create a default db"""
+    from fbone.utils import INSTANCE_FOLDER_PATH
+    if os.path.isdir(INSTANCE_FOLDER_PATH):
+        pass
+    else:
+        os.makedirs(INSTANCE_FOLDER_PATH)
+
+@application.cli.command()
+def cov():
+    """Runs the unit tests with coverage."""
+    _cov = coverage.coverage(branch=True,
+                             include='fbone/*',
+                             omit=['*/config/*'])
+    _cov.start()
+    print 'run coverage'
+    from StringIO import StringIO
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(tests.TestFrontend))
+    print result
+    print result.testsRun
+    print result.errors
+    print result.failures
+    _cov.stop()
+    print 'Coverage Summary:'
+    _cov.report()
+
+@application.cli.command()
+def test():
+    """Runs the unit tests."""
+    print 'starting test...'
+    # http://stackoverflow.com/questions/14282783/call-a-python-unittest-from-another-script-and-export-all-the-error-messages
+    from StringIO import StringIO
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(tests.TestFrontend))
+    print result
+    print result.testsRun
+    print result.errors
+    print result.failures
+    #unittest.run()
+    print 'end'
