@@ -27,6 +27,11 @@ env.hosts = ['']
 # http://stackoverflow.com/questions/17102968/reading-logs-with-fabric
 env.remote_interrupt = True
 
+@task
+def setup_virtual_env():
+    local("virtualenv venv")
+    with prefix("source ./venv/activate"):
+        local("pip install -r requirements.txt")
 
 @task
 def setup_python_macos():
