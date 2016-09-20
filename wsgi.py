@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+"""Wsgi script.
 
-import sys, os, pwd
+Usage:
+FLASK_APP=./wsgi.py flask run"""
+
+import sys, os
 
 project = "fbone"
 
@@ -11,8 +15,11 @@ project = "fbone"
 #os.environ['HOME'] = pwd.getpwuid(os.getuid()).pw_dir
 
 # activate virtualenv
-activate_this = os.path.join(os.environ["HOME"], ".virtualenvs", project, "bin/activate_this.py")
-execfile(activate_this, dict(__file__=activate_this))
+def virtualenv():
+    """Activate the virtualenv"""
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    activate_this = os.path.join(dir_path, 'venv', "bin/activate_this.py")
+    execfile(activate_this, dict(__file__=activate_this))
 
 BASE_DIR = os.path.join(os.path.dirname(__file__))
 if BASE_DIR not in sys.path:
@@ -20,4 +27,5 @@ if BASE_DIR not in sys.path:
 
 # give wsgi the "application"
 from fbone import create_app
+virtualenv()
 application = create_app()

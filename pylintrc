@@ -1,0 +1,5 @@
+[MESSAGES CONTROL]
+
+[TYPECHECK]
+
+ignored-classes=BaseTestCase

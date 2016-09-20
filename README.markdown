@@ -99,3 +99,9 @@ Many thanks to Python, Flask and other good stacks.
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/imwilsonxu/fbone/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
+## PIP DEPENDENCY
+
+In order to install the requirements.pip on a Debian server, the following packages are required on the host:
+ * libmysqlclient-dev
+ * libffi-dev

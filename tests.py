@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Utility for testing the flask app"""
+#pylint: disable=no-self-use,too-many-public-methods
 
 import unittest
 from flask_testing import TestCase
@@ -10,16 +12,18 @@ from fbone.extensions import db
 
 
 class BaseTestCase(TestCase):
+    """Default test class, use this for setting the db and other basic
+    structures"""
 
     def create_app(self):
         app = create_app(TestConfig)
         return app
 
     def init_data(self):
-        demo = User(
-                name=u'demo',
-                email=u'demo@example.com',
-                password=u'123456')
+        """Set test parameters"""
+        demo = User(name=u'demo',
+                    email=u'demo@example.com',
+                    password=u'123456')
         db.session.add(demo)
         db.session.commit()
 
@@ -36,6 +40,7 @@ class BaseTestCase(TestCase):
         db.drop_all()
 
     def login(self, username, password):
+        """Login test"""
         data = {
             'login': username,
             'password': password,
