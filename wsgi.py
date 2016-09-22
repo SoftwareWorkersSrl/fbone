@@ -7,7 +7,7 @@ FLASK_APP=./wsgi.py flask run"""
 import sys
 import os
 import unittest
-import tests
+import tests.tests as tests
 import coverage
 
 
@@ -56,14 +56,16 @@ def cov():
     from StringIO import StringIO
     stream = StringIO()
     runner = unittest.TextTestRunner(stream=stream)
-    result = runner.run(unittest.makeSuite(tests.TestFrontend))
+    result = runner.run(unittest.makeSuite(tests.TestFrontend2))
     print result
     print result.testsRun
     print result.errors
     print result.failures
     _cov.stop()
+    _cov.save()
     print 'Coverage Summary:'
     _cov.report()
+    _cov.html_report()
 
 @application.cli.command()
 def test():

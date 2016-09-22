@@ -32,7 +32,6 @@ class BaseTestCase(TestCase):
 
         db.create_all()
         self.init_data()
-        self.client = self.app.test_client()
 
     def tearDown(self):
         """Clean db session and drop all tables."""
@@ -61,42 +60,11 @@ class BaseTestCase(TestCase):
             self.assertTemplateUsed(name=template)
         return response
 
-    def _test_get_redirect(self, endpoint, redirect_to):
-        response = self.client.get(endpoint)
-        self.assert_redirects(response, redirect_to)
-        return response
 
+class TestFrontend(BaseTestCase):
 
-class TestFrontend2(BaseTestCase):
-
-    def test_index(self):
+    def test_show(self):
         self._test_get_request('/', 'index.html')
-        self._test_get_request('/login', 'frontend/login.html')
-
-        response = self.client.post('/login', data={
-            'login': "demo@example.com",
-            'password': "123456"}, follow_redirects=True)
-        assert "Logged in" in response.data
-        self._test_get_redirect('/', '/user/profile')
-        self._logout()
-        self._test_get_request('/', 'index.html')
-
-    def test_login_page(self):
-        self._test_get_request('/login', 'frontend/login.html')
-        with self.client:
-#            self.assertTrue(current_user.is_anonymous())
-            response = self.client.post('/login', data={
-                'login': "demo@example.com",
-                'password': "123456"}, follow_redirects=True)
-            assert "Logged in" in response.data
-#            self.assertTrue(current_user.is_anonymous())
-            self._test_get_redirect('/login', '/user/profile')
-            self._logout()
-            self._test_get_request('/login', 'frontend/login.html')
-            response = self.client.post('/login', data={
-                'login': "error@example.com",
-                'password': "123456"}, follow_redirects=True)
-            assert "Sorry, invalid login" in response.data
 
     def test_signup(self):
         self._test_get_request('/signup', 'frontend/signup.html')
@@ -119,9 +87,6 @@ class TestFrontend2(BaseTestCase):
             'login': "demo@example.com",
             'password': "123456"}, follow_redirects=True)
         assert "Logged in" in response.data
-        self._test_get_redirect('/', '/user/profile')
-        self._logout()
-        self._test_get_request('/', 'index.html')
 
     def test_logout(self):
         self.login("demo@example.com", "123456")

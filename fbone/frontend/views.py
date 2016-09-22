@@ -46,21 +46,21 @@ def login():
     return render_template('frontend/login.html', form=form)
 
 
-@frontend.route('/reauth', methods=['GET', 'POST'])
-@login_required
-def reauth():
-    form = ReauthForm(next=request.args.get('next'))
-
-    if request.method == 'POST':
-        user, authenticated = User.authenticate(current_user.name,
-                                    form.password.data)
-        if user and authenticated:
-            confirm_login()
-            flash('Reauthenticated.', 'success')
-            return redirect('/change_password')
-
-        flash('Password is wrong.', 'danger')
-    return render_template('frontend/reauth.html', form=form)
+#@frontend.route('/reauth', methods=['GET', 'POST'])
+#@login_required
+#def reauth():
+#    form = ReauthForm(next=request.args.get('next'))
+#
+#    if request.method == 'POST':
+#        user, authenticated = User.authenticate(current_user.name,
+#                                    form.password.data)
+#        if user and authenticated:
+#            confirm_login()
+#            flash('Reauthenticated.', 'success')
+#            return redirect('/change_password')
+#
+#        flash('Password is wrong.', 'danger')
+#    return render_template('frontend/reauth.html', form=form)
 
 
 @frontend.route('/logout')
@@ -92,53 +92,53 @@ def signup():
     return render_template('frontend/signup.html', form=form)
 
 
-@frontend.route('/change_password', methods=['GET', 'POST'])
-def change_password():
-    user = None
-    if current_user.is_authenticated:
-        if not login_fresh():
-            return login_manager.needs_refresh()
-        user = current_user
-    elif 'activation_key' in request.values and 'email' in request.values:
-        activation_key = request.values['activation_key']
-        email = request.values['email']
-        user = User.query.filter_by(activation_key=activation_key) \
-                         .filter_by(email=email).first()
-
-    if user is None:
-        abort(403)
-
-    form = ChangePasswordForm(activation_key=user.activation_key)
-
-    if form.validate_on_submit():
-        user.password = form.password.data
-        user.activation_key = None
-        db.session.add(user)
-        db.session.commit()
-
-        flash("Your password has been changed, please log in again", "success")
-        return redirect(url_for("frontend.login"))
-
-    return render_template("frontend/change_password.html", form=form)
-
-
-@frontend.route('/reset_password', methods=['GET', 'POST'])
-def reset_password():
-    form = RecoverPasswordForm()
-
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-
-        if user:
-            flash('Please see your email for instructions on '
-                  'how to access your account', 'success')
-
-            user.activation_key = str(uuid4())
-            db.session.add(user)
-            db.session.commit()
-
-            return render_template('frontend/reset_password.html', form=form)
-        else:
-            flash('Sorry, no user found for that email address', 'error')
-
-    return render_template('frontend/reset_password.html', form=form)
+##@frontend.route('/change_password', methods=['GET', 'POST'])
+#def change_password():
+#    user = None
+#    if current_user.is_authenticated:
+#        if not login_fresh():
+#            return login_manager.needs_refresh()
+#        user = current_user
+#    elif 'activation_key' in request.values and 'email' in request.values:
+#        activation_key = request.values['activation_key']
+#        email = request.values['email']
+#        user = User.query.filter_by(activation_key=activation_key) \
+#                         .filter_by(email=email).first()
+#
+#    if user is None:
+#        abort(403)
+#
+#    form = ChangePasswordForm(activation_key=user.activation_key)
+#
+#    if form.validate_on_submit():
+#        user.password = form.password.data
+#        user.activation_key = None
+#        db.session.add(user)
+#        db.session.commit()
+#
+#        flash("Your password has been changed, please log in again", "success")
+#        return redirect(url_for("frontend.login"))
+#
+#    return render_template("frontend/change_password.html", form=form)
+#
+#
+#@frontend.route('/reset_password', methods=['GET', 'POST'])
+#def reset_password():
+#    form = RecoverPasswordForm()
+#
+#    if form.validate_on_submit():
+#        user = User.query.filter_by(email=form.email.data).first()
+#
+#        if user:
+#            flash('Please see your email for instructions on '
+#                  'how to access your account', 'success')
+#
+#            user.activation_key = str(uuid4())
+#            db.session.add(user)
+#            db.session.commit()
+#
+#            return render_template('frontend/reset_password.html', form=form)
+#        else:
+#            flash('Sorry, no user found for that email address', 'error')
+#
+#    return render_template('frontend/reset_password.html', form=form)
