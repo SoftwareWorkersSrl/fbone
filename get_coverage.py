@@ -2,7 +2,7 @@
 """Runs the unit tests with coverage.
 
 Usage:
-FLASK_APP=./getcoverate.py"""
+python ./get_coverage.py"""
 # pylint: disable=invalid-name
 
 from StringIO import StringIO
@@ -10,6 +10,8 @@ import sys
 import os
 import unittest
 import coverage
+
+TEST_DIR = 'tests'
 
 def virtualenv():
     """Activate the virtualenv"""
@@ -19,27 +21,26 @@ def virtualenv():
 
 class Tests(object): #pylint: disable=no-init,too-few-public-methods
     """Class finding all available tests"""
-    def suite(self):
+    def suite(self): #pylint: disable=no-self-use
         """Function stores all the modules to be tested"""
         modules_to_test = []
-        test_dir = os.listdir('.')
+        test_dir = os.listdir(TEST_DIR)
         for test in test_dir:
             if test.startswith('test') and test.endswith('.py'):
                 modules_to_test.append(test.rstrip('.py'))
-        print modules_to_test
 
         alltests = unittest.TestSuite()
-        print map(__import__, modules_to_test)
-        for module in map(__import__, modules_to_test):
+        for module in map(__import__, modules_to_test): #pylint: disable=bad-builtin
             #module.testvars = ["variables you want to pass through"]
             #module.testvars = []
             alltests.addTest(unittest.findTestCases(module))
-        print alltests
         return alltests
 
 BASE_DIR = os.path.join(os.path.dirname(__file__))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
+TEST_DIR_PATH = os.path.join(BASE_DIR, TEST_DIR)
+sys.path.append(TEST_DIR_PATH)
 
 virtualenv()
 
