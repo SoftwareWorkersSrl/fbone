@@ -48,37 +48,19 @@ def setdir():
 @application.cli.command()
 def cov():
     """Runs the unit tests with coverage."""
-    _cov = coverage.coverage(branch=True,
-                             include='fbone/*',
-                             omit=['*/config/*'])
-    _cov.start()
-    print 'run coverage'
-    from StringIO import StringIO
-    stream = StringIO()
-    runner = unittest.TextTestRunner(stream=stream)
-    result = runner.run(unittest.makeSuite(tests.TestFrontend2))
-    print result
-    print result.testsRun
-    print result.errors
-    print result.failures
-    _cov.stop()
-    _cov.save()
-    print 'Coverage Summary:'
-    _cov.report()
-    _cov.html_report()
+    print 'Please run the script ./get_coverage.py'
 
 @application.cli.command()
 def test():
     """Runs the unit tests."""
-    print 'starting test...'
+    print 'please run python -m unittest discover'
     # http://stackoverflow.com/questions/14282783/call-a-python-unittest-from-another-script-and-export-all-the-error-messages
-    from StringIO import StringIO
-    stream = StringIO()
-    runner = unittest.TextTestRunner(stream=stream)
-    result = runner.run(unittest.makeSuite(tests.TestFrontend))
-    print result
-    print result.testsRun
-    print result.errors
-    print result.failures
-    #unittest.run()
-    print 'end'
+    #from StringIO import StringIO
+    #stream = StringIO()
+    #runner = unittest.TextTestRunner(stream=stream)
+    #result = runner.run(unittest.makeSuite(tests.TestFrontend))
+    #print result
+    #print result.testsRun
+    #print result.errors
+    #print result.failures
+    #print 'end'
